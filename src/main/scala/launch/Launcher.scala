@@ -30,7 +30,7 @@ object Launcher {
     while(corrects != 4) {
       roundNr += 1
       println(s"Round nr.: $roundNr. Possibles: ${currentPossibles.size}")
-      val nextGuess = GameFunctions.bestGuess(currentPossibles)
+      val nextGuess =  currentPossibles.head //GameFunctions.bestGuess(currentPossibles)
       print(nextGuess)
       val guessLikeness = GameFunctions.likeness(nextGuess, correctAnswer)
       corrects = guessLikeness._1
