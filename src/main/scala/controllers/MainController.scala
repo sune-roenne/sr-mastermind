@@ -69,6 +69,7 @@ class MainController {
     possibles = GameFunctions.generateAllPossibles(PieceColor.commonColors, 4)
     btnStartGame.setOnAction(handler {
       case ev => {
+        solutionSoFarCircles.foreach(_.setFill(Color.LIGHTGREY))
         possibles = GameFunctions.generateAllPossibles(PieceColor.commonColors, 4)
         txtPossibles.setText(possibles.size + "")
         guess
