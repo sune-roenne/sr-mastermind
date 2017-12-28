@@ -13,7 +13,8 @@ object GameFunctions {
       else
         possibles match {
           case Nil => Nil
-          case lis => lis.flatMap(col => generate(lis.filter(_.name != col.name), col :: current))
+          case lis @ car::cldr =>  lis.flatMap(col => generate(lis, col :: current)) //generate(lis, car :: current) ::: generate(cldr, current)
+            //lis.flatMap(col => generate(lis.filter(_.name != col.name), col :: current)) //::: lis.flatMap(col => generate(lis, col :: current))
         }
     }
     generate(colors, Nil)
@@ -44,16 +45,11 @@ object GameFunctions {
 
   def bestGuess(possibles: List[PiecesRow]) = {
     val listSize = possibles.headOption.map(_.pieces.size).getOrElse(0)
-    val feedbacks = possibleFeedback(listSize)
-    var count = 0
     val possibleScores = possibles.map {
       case poss => {
-        count += 1
-        /*if(count % 100 == 0)
-          println("Count: " + count)*/
-        val otherPossibles = possibles.filter(_ != poss)
-        val byFeedbacks = feedbacks.map(feedback => trimPossibles(otherPossibles, poss, feedback._1, feedback._2))
-        (poss, byFeedbacks.map(_.size).max)
+        val (worstCaseCorrects, worstCaseCorrectColors) = (0,listSize / 2)
+        val worstCaseResponse = GameFunctions.trimPossibles(possibles, poss, worstCaseCorrects, worstCaseCorrectColors)
+        (poss, worstCaseResponse.size)
       }
     }
     val minScore = possibleScores.map(_._2).min
