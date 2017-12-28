@@ -7,6 +7,7 @@ import model.PieceColor
 import model.PieceColor._
 import model.PiecesRow
 import java.io.PrintWriter
+import functions.ByWorstCaseFeedbackAI
 
 object DistributionExplorer {
 
@@ -35,7 +36,7 @@ object DistributionExplorer {
       }
       val info = ("Dist_round_" + roundNr, possibleDists.sortBy(_._2).map(p => p._1 + ";" + p._2) )
       printInfo(info)
-      val chose = possibleDists.sortBy(_._2).head._1
+      val chose = ByWorstCaseFeedbackAI.nextGuess(currentPossibles, Nil) //possibleDists.sortBy(_._2).head._1
       val correctness = GameFunctions.likeness(chose, correctAnswer)
       corrects = correctness._1
       correctColors = correctness._2
