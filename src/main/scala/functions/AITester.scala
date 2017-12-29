@@ -31,8 +31,12 @@ object AITester {
           timings += timeSpent
           val (corr, corrCol) = GameFunctions.likeness(correctAnswer, nextGuess)
           possibles = GameFunctions.trimPossibles(possibles, nextGuess, corr, corrCol)
+          possibles match {
+            case car :: Nil if car != nextGuess => {guesses += car; timings += 0 }
+            case _ => 
+          }
         } match {
-          case Failure(_) => possibles = Nil
+          case Failure(e) => {possibles = Nil; e.printStackTrace()}
           case _ => 
         }
       }
