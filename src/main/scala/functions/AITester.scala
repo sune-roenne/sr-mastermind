@@ -18,6 +18,7 @@ object AITester {
   
   def executeTest(ai : AI, rounds : Int, listSize : Int) = {
     (for(i <- 0 until rounds) yield {
+      println("Round: " + (i+1))
       val correctAnswer = generateRandomRow(listSize)
       var possibles = GameFunctions.generateAllPossibles(PieceColor.commonColors, listSize)
       var guesses = scala.collection.mutable.ArrayBuffer.empty[PiecesRow] 
