@@ -14,6 +14,8 @@ import javafx.scene.shape.Circle
 import model.PieceColor
 import model.PiecesRow
 import javafx.scene.control.TextArea
+import javafx.scene.chart.PieChart
+import functions.ByMostRepresentedColorAI
 
 @FXML
 class MainController {
@@ -31,14 +33,17 @@ class MainController {
   @FXML
   var sldCorrectColor: Slider = null
   @FXML
-  var txtPossibles : TextArea = null
+  var txtPossibles: TextArea = null
+  @FXML
+  var hboxColorDistribution: HBox = null
 
   var correct = 0
   var correctColor = 0
   var solutionSoFarCircles = List.empty[Circle]
   var nextGuessCircles = List.empty[Circle]
+  var colorDistributionPieCharts = List.empty[PieChart]
   var possibles = List.empty[PiecesRow]
-  var lastGuess: Option[PiecesRow] = None
+  var previousGuesses = scala.collection.mutable.ArrayBuffer.empty[PiecesRow]
 
   @FXML
   def initialize() {
@@ -48,12 +53,15 @@ class MainController {
     nextGuessCircles = hboxNextGuess.getChildren.toList collect {
       case circ: Circle => circ
     }
+    colorDistributionPieCharts = hboxColorDistribution.getChildren.toList collect {
+      case pieChart: PieChart => pieChart
+    }
 
     btnDone.setOnAction(handler {
       case ev => {
         correct = sldCorrect.getValue.toInt
         correctColor = sldCorrectColor.getValue.toInt
-        lastGuess.foreach {
+        previousGuesses.reverse.headOption.foreach {
           case guess => {
             possibles = GameFunctions.trimPossibles(possibles, guess, correct, correctColor)
             txtPossibles.setText(possibles.size + "")
@@ -64,15 +72,18 @@ class MainController {
           }
         }
         guess
+        fillColorDistributionCharts()
       }
     })
     possibles = GameFunctions.generateAllPossibles(PieceColor.commonColors, 4)
     btnStartGame.setOnAction(handler {
       case ev => {
+        previousGuesses.clear()
         solutionSoFarCircles.foreach(_.setFill(Color.LIGHTGREY))
         possibles = GameFunctions.generateAllPossibles(PieceColor.commonColors, 4)
         txtPossibles.setText(possibles.size + "")
         guess
+        fillColorDistributionCharts()
       }
     })
   }
@@ -80,14 +91,38 @@ class MainController {
   def guess {
     possibles.headOption.foreach {
       case head => {
-        val nextGuess = head //GameFunctions.bestGuess(possibles)
-        lastGuess = Some(nextGuess)
+        val nextGuess = ByMostRepresentedColorAI.nextGuess(possibles, previousGuesses.toList)
+        previousGuesses += nextGuess
         nextGuess.pieces.zip(nextGuessCircles).foreach {
           case (gamCol, circ) => circ.setFill(col(gamCol))
         }
       }
     }
 
+  }
+
+  def fillColorDistributionCharts() {
+    possibles.headOption.foreach {
+      case head => {
+        val listSize = head.pieces.length
+        val dist = (for (indx <- 0 until listSize) yield {
+          val indxCols = possibles.map(poss => poss.pieces(indx))
+          indxCols.groupBy(c => c).map(p => p._1 -> p._2.size).toList.sortBy(p => -p._2)
+        }).toList
+        dist.zip(colorDistributionPieCharts).foreach {
+          case (di, pie) => {
+            pie.getData.clear()
+            di.foreach(d => {
+              val dat = new PieChart.Data(d._1.name, d._2)
+              pie.getData.add(dat)
+              val color = col(d._1)
+              val colorCode = toHexString(color)
+              dat.getNode.setStyle("-fx-pie-color: " + colorCode + ";") 
+            })
+          }
+        }
+      }
+    }
   }
 
   def handler(handl: (ActionEvent => Unit)) = new EventHandler[ActionEvent] {
@@ -104,6 +139,12 @@ class MainController {
     case PieceColor.White  => Color.WHITE
     case PieceColor.Yellow => Color.YELLOW
     case _                 => Color.BLACK
-
+  }
+  
+  def toHexString(col : Color) = {
+    String.format( "#%02X%02X%02X",
+            (col.getRed() * 255 ).toInt.asInstanceOf[Object],
+            (col.getGreen() * 255 ).toInt.asInstanceOf[Object],
+            (col.getBlue() * 255 ).toInt.asInstanceOf[Object] )
   }
 }

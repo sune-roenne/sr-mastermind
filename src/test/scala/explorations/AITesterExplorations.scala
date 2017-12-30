@@ -5,6 +5,7 @@ import functions.ByWorstCaseFeedbackAI
 import java.io.File
 import java.io.PrintWriter
 import functions.ByLeastLikenessToPreviousAI
+import functions.ByMostRepresentedColorAI
 
 object AITesterExplorations {
   val outputFolder = new File("""c:\temp\mastermind""")
@@ -12,7 +13,7 @@ object AITesterExplorations {
     outputFolder.mkdirs()
   
   def main(args: Array[String]): Unit = {
-    val underTest = ByLeastLikenessToPreviousAI //ByWorstCaseFeedbackAI
+    val underTest = ByMostRepresentedColorAI//ByLeastLikenessToPreviousAI //ByWorstCaseFeedbackAI
     val underTestName = underTest.getClass.getName.replaceAll("(\\$)|(functions\\.)", "")
     println(underTestName)
     val testResult = AITester.executeTest(ByWorstCaseFeedbackAI, 50, 4)
