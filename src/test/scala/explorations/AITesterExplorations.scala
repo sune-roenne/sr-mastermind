@@ -13,10 +13,10 @@ object AITesterExplorations {
     outputFolder.mkdirs()
   
   def main(args: Array[String]): Unit = {
-    val underTest = ByMostRepresentedColorAI//ByLeastLikenessToPreviousAI //ByWorstCaseFeedbackAI
+    val underTest = ByWorstCaseFeedbackAI
     val underTestName = underTest.getClass.getName.replaceAll("(\\$)|(functions\\.)", "")
     println(underTestName)
-    val testResult = AITester.executeTest(ByWorstCaseFeedbackAI, 50, 4)
+    val testResult = AITester.executeTest(underTest, 200, 4)
     val outputFile = new File(outputFolder, "exectest_" + underTestName + "_" + System.currentTimeMillis()  + ".csv")
     outputFile.createNewFile()
     val writer = new PrintWriter(outputFile)

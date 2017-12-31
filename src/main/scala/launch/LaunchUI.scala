@@ -17,7 +17,7 @@ object LaunchUI{
 
 class LaunchUI extends Application {
   override def start(stage : Stage) {
-    stage.setTitle("Familien Rønnes Mastermind AI")
+    stage.setTitle("Mastermind AI")
     val contents = FXMLLoader.load(this.getClass().getClassLoader.getResource("main-jdk8.fxml")) : javafx.scene.layout.AnchorPane
     val scene = new Scene(contents)
     stage.setScene(scene)

@@ -25,7 +25,7 @@
             <Circle fill="#b5b9bd" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
          </children>
       </HBox>
-      <Label fx:id="lblNextGuess" layoutX="14.0" layoutY="96.0" prefHeight="20.0" prefWidth="274.0" text="Næste bud" />
+      <Label fx:id="lblNextGuess" layoutX="14.0" layoutY="96.0" prefHeight="21.0" prefWidth="122.0" text="Næste bud" />
       <HBox fx:id="hboxNextGuess" layoutX="14.0" layoutY="122.0" prefHeight="31.0" prefWidth="110.0" spacing="5.0">
          <children>
             <Circle fill="#b5b9bd" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
@@ -39,8 +39,8 @@
       <Slider fx:id="sldCorrectColor" blockIncrement="1.0" layoutX="14.0" layoutY="306.0" majorTickUnit="1.0" max="4.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
       <Label layoutX="14.0" layoutY="281.0" text="Korrekt farve" />
       <Button fx:id="btnDone" layoutX="209.0" layoutY="281.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="158.0" text="Færdig med at vælge" textFill="#5f0d0d" />
-      <TextArea fx:id="txtPossibles" editable="false" layoutX="342.0" layoutY="55.0" prefHeight="20.0" prefWidth="68.0" />
-      <Label layoutX="342.0" layoutY="24.0" text="Antal muligheder" />
+      <TextArea fx:id="txtPossibles" editable="false" layoutX="209.0" layoutY="33.0" prefHeight="20.0" prefWidth="68.0" />
+      <Label layoutX="209.0" layoutY="4.0" text="Antal muligheder" />
       <HBox fx:id="hboxColorDistribution" layoutX="209.0" layoutY="426.0" prefHeight="150.0" prefWidth="576.0">
          <children>
             <PieChart labelsVisible="false" legendVisible="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="150.0" />
@@ -49,6 +49,8 @@
             <PieChart labelsVisible="false" legendVisible="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="150.0" />
          </children>
       </HBox>
-      <Label layoutX="205.0" layoutY="405.0" prefHeight="20.0" prefWidth="274.0" text="Farve fordeling" />
+      <Label layoutX="216.0" layoutY="405.0" prefHeight="20.0" prefWidth="274.0" text="Farve fordeling" />
+      <Label layoutX="209.0" layoutY="96.0" text="AI" />
+      <ChoiceBox fx:id="chBoxAI" layoutX="202.0" layoutY="117.0" prefHeight="31.0" prefWidth="158.0" />
    </children>
 </AnchorPane>

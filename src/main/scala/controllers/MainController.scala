@@ -16,6 +16,9 @@ import model.PiecesRow
 import javafx.scene.control.TextArea
 import javafx.scene.chart.PieChart
 import functions.ByMostRepresentedColorAI
+import functions.ByLeastLikenessToPreviousAI
+import functions.ByWorstCaseFeedbackAI
+import javafx.scene.control.ChoiceBox
 
 @FXML
 class MainController {
@@ -36,6 +39,8 @@ class MainController {
   var txtPossibles: TextArea = null
   @FXML
   var hboxColorDistribution: HBox = null
+  @FXML
+  var chBoxAI: ChoiceBox[String] = null
 
   var correct = 0
   var correctColor = 0
@@ -44,6 +49,11 @@ class MainController {
   var colorDistributionPieCharts = List.empty[PieChart]
   var possibles = List.empty[PiecesRow]
   var previousGuesses = scala.collection.mutable.ArrayBuffer.empty[PiecesRow]
+  val aiList = List(
+    ByWorstCaseFeedbackAI,
+    ByLeastLikenessToPreviousAI,
+    ByMostRepresentedColorAI).map(ai => ai.getClass.getName.replaceAll("(\\$)|(functions\\.)", "") -> ai)
+  var (aiName, ai) = aiList.head
 
   @FXML
   def initialize() {
@@ -56,6 +66,14 @@ class MainController {
     colorDistributionPieCharts = hboxColorDistribution.getChildren.toList collect {
       case pieChart: PieChart => pieChart
     }
+    chBoxAI.getItems.addAll(aiList.map(_._1))
+    chBoxAI.setValue(aiName)
+    chBoxAI.setOnAction(handler {
+      case ev => {
+        aiName = chBoxAI.getValue
+        ai = aiList.find(_._1 == aiName).get._2
+      }
+    })
 
     btnDone.setOnAction(handler {
       case ev => {
@@ -117,7 +135,7 @@ class MainController {
               pie.getData.add(dat)
               val color = col(d._1)
               val colorCode = toHexString(color)
-              dat.getNode.setStyle("-fx-pie-color: " + colorCode + ";") 
+              dat.getNode.setStyle("-fx-pie-color: " + colorCode + ";")
             })
           }
         }
@@ -140,11 +158,12 @@ class MainController {
     case PieceColor.Yellow => Color.YELLOW
     case _                 => Color.BLACK
   }
-  
-  def toHexString(col : Color) = {
-    String.format( "#%02X%02X%02X",
-            (col.getRed() * 255 ).toInt.asInstanceOf[Object],
-            (col.getGreen() * 255 ).toInt.asInstanceOf[Object],
-            (col.getBlue() * 255 ).toInt.asInstanceOf[Object] )
+
+  def toHexString(col: Color) = {
+    String.format(
+      "#%02X%02X%02X",
+      (col.getRed() * 255).toInt.asInstanceOf[Object],
+      (col.getGreen() * 255).toInt.asInstanceOf[Object],
+      (col.getBlue() * 255).toInt.asInstanceOf[Object])
   }
 }
